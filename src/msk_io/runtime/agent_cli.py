@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """CLI entry for the lightweight agent runtime."""
 from __future__ import annotations
 

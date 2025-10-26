@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Placeholder API wrapper for external LLM calls."""
 from __future__ import annotations
 

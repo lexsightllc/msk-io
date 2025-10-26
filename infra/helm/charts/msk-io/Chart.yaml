@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 apiVersion: v2
 name: msk-io
 version: 0.1.0

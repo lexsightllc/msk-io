@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());

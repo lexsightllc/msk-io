@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 import logging
 import functools
 from typing import Any, Callable, TypeVar, ParamSpec

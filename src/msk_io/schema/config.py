@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from typing import Optional
 from pydantic import Field, SecretStr
 from msk_io.schema._pydantic_base import MSKIOBaseModel

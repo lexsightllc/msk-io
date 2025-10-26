@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 document.getElementById('import-token').addEventListener('click', () => {
     const token = prompt('Enter token or scan QR');
     chrome.storage.local.set({ token });

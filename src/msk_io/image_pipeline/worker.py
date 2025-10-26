@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Asynchronous worker that processes tasks."""
 from __future__ import annotations
 

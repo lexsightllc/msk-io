@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from typing import Dict, Any, List
 from msk_io.schema.metrics import EvaluationReport, Metric
 from msk_io.schema.image_analysis import ImageSegmentationResult

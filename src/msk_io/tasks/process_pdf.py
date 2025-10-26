@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Simple task to process a PDF using the internal agent runtime."""
 from __future__ import annotations
 

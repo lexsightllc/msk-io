@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Prompt utilities and web helpers used by the pipeline demos."""
 
 from msk_io.prompting.prompt_handler import PromptHandler

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -34,3 +35,12 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ['@commitlint/config-conventional']
+
+  - repo: local
+    hooks:
+      - id: ensure-spdx-headers
+        name: Ensure SPDX headers
+        entry: python scripts/ensure_spdx_headers.py
+        language: system
+        pass_filenames: true
+

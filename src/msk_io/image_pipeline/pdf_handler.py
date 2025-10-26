@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Handle PDF loading and page extraction."""
 from __future__ import annotations
 

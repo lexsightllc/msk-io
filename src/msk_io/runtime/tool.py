@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Simple callable wrapper for tools."""
 from __future__ import annotations
 

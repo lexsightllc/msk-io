@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Preprocessing Module
 This module handles image loading, normalization, and preprocessing operations.

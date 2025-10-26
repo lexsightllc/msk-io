@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # MSK-IO
 
 MSK-IO is an offline-first medical imaging pipeline that combines DICOM ingestion, segmentation, multimodal retrieval, and LLM-based reasoning. The project now follows a standardized repository layout so teams can bootstrap, test, and deploy consistently across environments.
@@ -84,3 +85,12 @@ Additional architecture notes live under `docs/`:
 ## Support
 
 Questions, bug reports, and feature requests can be filed via GitHub issues or directed to the owners listed in `project.yaml`.
+
+## License
+
+MSK-IO is distributed under the [Mozilla Public License 2.0](LICENSE). Any modifications to MPL-covered files must be shared under the same license, while larger aggregations can remain under separate terms when the MPL files are left unmodified. For details, review the LICENSE file.
+
+## Credits
+
+Please retain this project's [NOTICE](NOTICE) file when redistributing MSK-IO. The project acknowledges all contributors listed via Git history and documents third-party components in NOTICE.
+

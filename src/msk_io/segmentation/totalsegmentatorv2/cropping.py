@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Simple volume cropping utilities."""
 from __future__ import annotations
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Context object passed between agents."""
 from __future__ import annotations
 

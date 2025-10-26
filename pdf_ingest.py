@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Standalone PDF ingestion using MSK_IO components."""
 from __future__ import annotations
 

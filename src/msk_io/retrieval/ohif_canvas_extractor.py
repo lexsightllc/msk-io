@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 import os
 from datetime import datetime
 from typing import Optional

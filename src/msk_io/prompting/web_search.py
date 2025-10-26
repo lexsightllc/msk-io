@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Trivial web search stub."""
 from __future__ import annotations
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Segmentation Module
 This module handles image segmentation using edge detection and morphological operations.

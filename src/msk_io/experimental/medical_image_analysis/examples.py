@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Example Usage
 This script demonstrates various ways to use the medical image analysis pipeline.

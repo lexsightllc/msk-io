@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: MPL-2.0
 """CLI for cropping a volume to its body mask using TotalSegmentatorV2."""
 from __future__ import annotations
 

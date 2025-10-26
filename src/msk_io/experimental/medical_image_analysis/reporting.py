@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Reporting Module
 This module generates comprehensive analysis reports with visualizations.

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Placeholder script to convert datasets to nnU-Net format."""
 from __future__ import annotations
 

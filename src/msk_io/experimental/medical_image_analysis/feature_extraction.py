@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Feature Extraction Module
 This module extracts quantitative features from segmented regions.

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 MSK-IO TotalSegmentator v2 Integration Module.
 

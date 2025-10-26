@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # Contributing Guide
 
 ## Getting Started
@@ -26,3 +27,8 @@
 - Reviewers should focus on correctness, maintainability, and security.
 - Suggested improvements can be requested; blocking issues must include clear reasoning.
 - Maintainers merge once quality bars are met and CI is green.
+
+## Licensing of Contributions
+
+By submitting a contribution you agree that it will be licensed under the [MPL-2.0](LICENSE), matching the outbound license of the project. Please ensure new files include an "SPDX-License-Identifier: MPL-2.0" header so that inbound and outbound terms remain aligned.
+

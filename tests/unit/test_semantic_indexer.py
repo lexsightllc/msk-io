@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 import os
 import pytest
 from msk_io.indexer.semantic_indexer import SemanticIndexer

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from msk_io.schema.prompt_template import PromptTemplate, PromptParameter, PromptSet
 
 DIAGNOSTIC_ASSESSMENT_PROMPT = PromptTemplate(

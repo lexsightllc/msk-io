@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from typing import Dict, Any, List, Optional
 from datetime import date, time
 from pydantic import Field
