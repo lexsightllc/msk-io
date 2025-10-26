@@ -1,0 +1,4 @@
+# Require approvals from domain owners for sensitive paths
+/docs/ @imaging-lab
+/src/msk_io/control/ @team-platform
+/scripts/ @team-platform

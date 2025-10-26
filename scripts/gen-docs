@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FIX=0
+ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --fix)
+            FIX=1
+            ;;
+        *)
+            ARGS+=("$arg")
+            ;;
+    esac
+done
+JOINED=""
+if [ ${#ARGS[@]} -gt 0 ]; then
+    printf -v JOINED '%q ' "${ARGS[@]}"
+    JOINED=${JOINED%% }
+fi
+if [ $FIX -eq 1 ]; then
+    MSK_FIX=1 MSK_ARGS="$JOINED" "$SCRIPT_DIR/run-task" gen-docs
+else
+    MSK_ARGS="$JOINED" "$SCRIPT_DIR/run-task" gen-docs
+fi

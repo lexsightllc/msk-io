@@ -2,25 +2,16 @@
 set -euo pipefail
 
 # --- Configuration ---
-VENV_DIR="./venv"
+VENV_DIR="./.venv"
 CHROMIUM_BOOTSTRAP="./bootstrap_chromium.sh"
 PYTHON_BOOTSTRAP="./bootstrap_pipeline.py"
-CHROMIUM_ARCHIVE="./resources/chromium/chromium.tar.xz"
+CHROMIUM_ARCHIVE="./assets/resources/chromium/chromium.tar.xz"
 
-# --- Ensure virtualenv ---
-if [ ! -d "$VENV_DIR" ]; then
-    python3 -m venv "$VENV_DIR"
-fi
-source "$VENV_DIR/bin/activate"
+# --- Ensure toolchain ---
+./scripts/bootstrap
 
-# --- Install requirements ---
-pip install --upgrade pip
-if ! pip install -e .[dev]; then
-    pip install pydantic-settings prometheus-client httpx fastapi numpy pydicom lmdb pillow nibabel pdfminer.six pyppeteer
-fi
-
-# --- Run tests ---
-./run_tests.sh
+# --- Run quality gates ---
+./scripts/check
 
 # --- Validate Chromium setup ---
 if ! command -v chromium-browser &> /dev/null && [ ! -f "$CHROMIUM_ARCHIVE" ]; then
@@ -36,4 +27,3 @@ if [ -z "${MSK_REMOTE_URL:-}" ] || [ -z "${MSK_AUTH_TOKEN:-}" ]; then
     exit 1
 fi
 python "$PYTHON_BOOTSTRAP"
-

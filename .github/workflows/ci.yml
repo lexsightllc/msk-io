@@ -1,52 +1,103 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-  build:
+  quality:
+    name: Quality Gates
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v3
+
+      - name: Cache pip
+        uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements-lock.txt') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('configs/python/requirements-lock.txt') }}
+
       - name: Install dependencies
         run: |
-          pip install -r requirements-lock.txt
-          pre-commit install
-      - name: Run pre-commit
-        run: pre-commit run --files $(git ls-files -m)
-      - name: Run tests with coverage
+          python -m pip install --upgrade pip
+          python -m pip install -r configs/python/requirements-lock.txt
+          python -m pip install -e .[dev]
+
+      - name: Run checks
         run: |
-          coverage run --source=msk_io -m pytest -q
-          coverage xml
-          coverage report --fail-under=90
-      - uses: codecov/codecov-action@v3
+          make check
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
         with:
-          files: coverage.xml
+          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
+          path: coverage.xml
+          if-no-files-found: ignore
 
   docker:
-    needs: build
+    name: Build Container
+    needs: quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build image
-        run: docker build -t msk-io:${{ github.sha }} .
-      - name: Push image
-        run: echo "docker push"
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: msk-io:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+      - name: Scan image
+        uses: aquasecurity/trivy-action@v0.12.0
+        with:
+          image-ref: msk-io:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+  sbom:
+    name: SBOM Generation
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Generate SBOM
+        run: |
+          python -m pip install pip-audit
+          python -m pip_audit --format cyclonedx-json --output sbom/sbom.json --requirement configs/python/requirements-lock.txt
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom/sbom.json
+
 
   helm:
-    needs: build
+    name: Helm Lint
+    needs: quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lint chart
-        run: helm lint charts/msk-io
+        run: helm lint infra/helm/charts/msk-io

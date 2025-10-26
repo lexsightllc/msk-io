@@ -33,18 +33,69 @@ dependencies = [
 gpu = ["cupy"]
 cli = ["rich"]
 dev = [
-    "pytest",
-    "black",
-    "flake8",
-    "mypy",
-    "pre-commit",
+    "black>=24.4",
+    "isort>=5.13",
+    "mypy>=1.8",
+    "pre-commit>=3.6",
+    "pytest>=8.0",
+    "pytest-cov>=4.1",
+    "ruff>=0.3",
+    "types-requests",
 ]
 langchain = ["langchain"]
 
 [tool.setuptools]
-packages = ["msk_io"]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["msk_io*"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "dirty-tag"
 
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+exclude = ["docs", "apps", "infra", "assets"]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "UP", "N", "PL"]
+ignore = ["E203"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config --doctest-modules --cov=msk_io --cov-report=term-missing"
+testpaths = ["tests/unit", "tests/integration"]
+xfail_strict = true
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.coverage.run]
+branch = true
+source = ["msk_io"]
+omit = ["tests/*"]

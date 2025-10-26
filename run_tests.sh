@@ -1,11 +1,5 @@
-#!/bin/bash
-# Simple script to run the full test suite with correct PYTHONPATH
-# Usage: ./run_tests.sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e
-
-# Ensure we're at repo root
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
-
-PYTHONPATH=$(pwd) pytest -v --tb=short tests/
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+"$SCRIPT_DIR/scripts/test" "$@"

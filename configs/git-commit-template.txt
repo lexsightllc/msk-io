@@ -1,0 +1,5 @@
+# Conventional Commit Template
+# type(scope): short summary
+#
+# Body can include motivation and implementation details.
+# Footer references issues or breaking changes.
