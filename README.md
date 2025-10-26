@@ -1,109 +1,86 @@
-```mermaid
-graph TD
-    subgraph Preprocessing
-        A[DICOM Loader] --> B[dicom2nifti or SimpleITK]
-        B --> C[PNG Conversion]
-        C --> D[OCR Engine]
-        D --> E[PDF Text Extractor]
-    end
+# MSK-IO
 
-    subgraph ImageProcessing
-        F[TotalSegmentator] --> G[Segmentation Masks]
-        G --> H[Constraint Mapper]
-    end
+MSK-IO is an offline-first medical imaging pipeline that combines DICOM ingestion, segmentation, multimodal retrieval, and LLM-based reasoning. The project now follows a standardized repository layout so teams can bootstrap, test, and deploy consistently across environments.
 
-    subgraph NLP_and_Symbolic
-        E --> I[Biomedical NLP]
-        I --> J[NER + Parsing]
-        J --> K[State Emitter]
-        H --> K
-        K --> L[Affinity Graph]
-    end
+## Repository Layout
 
-    subgraph Inference
-        L --> M[Constraint Lattice]
-        M --> N[WildCore Security]
-        N --> O[Phi-2 or Gemma-2B]
-        O --> P[Symbolic Output]
-    end
-
-    subgraph ControlEvaluation
-        P --> Q[State Vector & Metrics]
-        Q --> R[Audit Logger]
-        R --> S[Human-in-the-Loop]
-    end
+```
+.
+├── apps/                     # Prototype Flutter/PWA/browser-extension clients
+├── assets/                   # Offline Chromium bundle and other large assets
+├── configs/                  # Tooling configuration (lockfiles, commitlint, templates)
+├── data/                     # Workspace for local datasets (gitignored)
+├── docs/                     # Whitepaper, ADRs, and system maps
+├── infra/                    # Helm charts and infrastructure manifests
+├── scripts/                  # Task shims wrapping Make targets and CI flows
+├── src/                      # Python package (src-layout)
+├── tests/                    # Unit, integration, and e2e suites
+├── Dockerfile                # Container image for running the API
+├── Makefile                  # Canonical task runner
+└── project.yaml              # Machine-readable metadata
 ```
 
-## Remote OHIF Access
-
-The :mod:`msk_io.retrieval` package provides helpers for working with
-web-based viewers. ``OHIFCanvasExtractor`` captures rendered frames using
-a headless browser. ``DICOMStreamSniffer`` monitors network traffic to
-download the original DICOM payloads. ``RemoteDICOMLoader`` combines both
-methods and is triggered when ``remote_url`` and ``auth_token`` are set in
-``PipelineSettings``.
-
-## Local Chromium Setup
-
-Some utilities rely on a headless Chromium browser. Run `./bootstrap_chromium.sh`
-to ensure a compatible binary is available. The script checks for a system
-installation and unpacks `resources/chromium/chromium.tar.xz` when needed. A
-Python helper (`bootstrap_chromium.py`) provides the same behavior for
-restricted environments.
-
-## Automated Bootstrap
-
-For air‑gapped execution ``bootstrap_pipeline.py`` orchestrates the entire
-setup. It validates the local Chromium archive, extracts it through
-``bootstrap_chromium.sh`` and runs the pipeline with ``MSK_REMOTE_URL`` and
-``MSK_AUTH_TOKEN`` from the environment. Once ``resources/chromium/chromium.tar.xz``
-is present, invoke it as:
-
-```bash
-MSK_REMOTE_URL="https://nbia.cancerimagingarchive.net/viewer/?study=..." \
-MSK_AUTH_TOKEN="eyJhbGciOiJI..." \
-python bootstrap_pipeline.py
-```
+Legacy tooling (e.g., `bootstrap_chromium.py`, `full_setup.sh`) is still available for air-gapped deployments but the new scripts under `scripts/` should be preferred.
 
 ## Quickstart
 
-The following steps reproduce the offline pipeline described in the project whitepaper. They assume a Linux environment:
+```bash
+# Clone and enter the repository
+git clone https://example.org/msk-io.git
+cd msk-io
 
-1. Create and activate a virtual environment:
+# Bootstrap toolchain and install hooks
+scripts/bootstrap
 
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+# Run the full local quality gate
+scripts/check
 
-2. Install dependencies. Prefer the editable install but fall back to the minimal list when the optional extras are unavailable:
+# Launch the development API server (http://localhost:8000)
+scripts/dev
+```
 
-   ```bash
-   pip install -e .[dev] || \
-   pip install pydantic-settings prometheus-client httpx fastapi numpy pydicom lmdb pillow nibabel pdfminer.six pyppeteer
-   ```
+When operating offline place a Chromium archive at `assets/resources/chromium/chromium.tar.xz` and run `bootstrap_pipeline.py` to extract the binary before invoking the main pipeline.
 
-3. Place a compatible `chromium.tar.xz` inside `resources/chromium/` if the system has no network access. Then bootstrap the browser with:
+## Developer Tasks
 
-   ```bash
-   ./bootstrap_chromium.sh  # or `python bootstrap_chromium.py`
-   ```
+| Task | Description |
+| --- | --- |
+| `scripts/bootstrap` | Create a virtual environment, install dependencies, and configure pre-commit hooks. |
+| `scripts/dev` | Start the FastAPI service with hot reload. |
+| `scripts/lint` | Run Ruff, Black, and isort; pass `--fix` to auto-correct lint issues. |
+| `scripts/fmt` | Format code with Black, isort, and Ruff formatter. |
+| `scripts/typecheck` | Execute mypy in strict mode. |
+| `scripts/test` | Run unit and integration tests with coverage. |
+| `scripts/e2e` | Execute end-to-end scenarios under `tests/e2e`. |
+| `scripts/coverage` | Generate coverage reports in the terminal and XML. |
+| `scripts/build` | Build Python artifacts via `python -m build`. |
+| `scripts/package` | Confirm build artifacts exist (wheel/sdist). |
+| `scripts/release` | Build artifacts and run `twine check` for release validation. |
+| `scripts/update-deps` | Regenerate `configs/python/requirements-lock.txt` using pip-tools. |
+| `scripts/security-scan` | Run Bandit, pip-audit, and detect-secrets scans. |
+| `scripts/sbom` | Produce a CycloneDX SBOM with pip-audit. |
+| `scripts/gen-docs` | Generate API documentation into `docs/api/` using pdoc. |
+| `scripts/migrate` | Run database migrations when a `migrations/` directory is present. |
+| `scripts/clean` | Remove build artifacts, caches, and generated reports. |
+| `scripts/check` | Execute linting, type checking, tests, coverage, and security scan sequentially. |
 
-4. Run the test suite to confirm the environment works:
+Every script has a PowerShell counterpart (e.g., `scripts/lint.ps1`) so Windows developers can participate without WSL.
 
-   ```bash
-   ./run_tests.sh
-   ```
+## Observability and Compliance
 
-5. Export the remote OHIF url and token and launch the pipeline:
+- Logging configuration lives in `src/msk_io/utils/log_config.py` and enables structured output.
+- Metrics are exposed via the FastAPI application and can be scraped by Prometheus.
+- Security scanning is automated via GitHub Actions (`.github/workflows/ci.yml`) and locally with `scripts/security-scan`.
+- SBOM artifacts are generated into `sbom/` and uploaded during CI.
 
-   ```bash
-   export MSK_REMOTE_URL="https://nbia.example/viewer/123"
-   export MSK_AUTH_TOKEN="<jwt-token>"
-   python bootstrap_pipeline.py
-   ```
+## Documentation
 
-## SMS Token Utilities
+Additional architecture notes live under `docs/`:
 
-The repository includes `sms_module.py` which implements a basic SMS token flow. Use `python sms_module.py send <phone> <token>` to send an encoded token and `python sms_module.py receive <message>` to validate incoming messages.
+- `docs/WHITEPAPER.md` – pipeline deep dive
+- `docs/adr/` – decision records (starting with ADR 0001 for the normalization work)
+- `docs/system-map.md` – high-level system topology diagram
 
+## Support
+
+Questions, bug reports, and feature requests can be filed via GitHub issues or directed to the owners listed in `project.yaml`.

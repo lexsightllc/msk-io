@@ -1,52 +1,36 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 24.4.2
     hooks:
       - id: black
-        stages: [commit]
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
+        language_version: python3
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.5
     hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-bugbear
-          - flake8-comprehensions
-          - flake8-bandit
-          - flake8-docstrings
-        args:
-          - --max-complexity=10
-          - --select=C90,E,F,W,B,B950,D
-        stages: [commit]
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
     hooks:
       - id: isort
-        stages: [commit]
+        additional_dependencies: ["isort[pyproject]"]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.6.1
+    rev: v1.8.0
     hooks:
       - id: mypy
-        additional_dependencies: [types-Pillow, types-pydicom]
-        args: [--strict]
-        stages: [commit]
-  - repo: https://github.com/pycqa/bandit
-    rev: 1.7.5
+        additional_dependencies: ["types-requests"]
+
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit
+    rev: v9.14.0
     hooks:
-      - id: bandit
-        stages: [commit]
-  - repo: https://github.com/pyupio/safety-db
-    rev: master
-    hooks:
-      - id: safety
-        stages: [commit]
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
-    hooks:
-      - id: markdownlint
-        stages: [commit]
-  - repo: https://github.com/prettier/prettier
-    rev: 3.0.0
-    hooks:
-      - id: prettier
-        files: '\.(svelte|jsx|tsx)$'
-        stages: [commit]
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ['@commitlint/config-conventional']

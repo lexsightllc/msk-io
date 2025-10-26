@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 CHROMIUM_SCRIPT = Path(__file__).with_name("bootstrap_chromium.sh")
-CHROMIUM_ARCHIVE = Path(__file__).parent / "resources" / "chromium" / "chromium.tar.xz"
+CHROMIUM_ARCHIVE = Path(__file__).parent / "assets" / "resources" / "chromium" / "chromium.tar.xz"
 CHROMIUM_CMDS = ["chromium-browser", "chromium", "google-chrome"]
 
 

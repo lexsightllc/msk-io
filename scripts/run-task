@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -lt 1 ]; then
+    echo "Usage: run-task <target> [make-args...]" >&2
+    exit 1
+fi
+
+TASK="$1"
+shift || true
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MAKE_ARGS=("-C" "$REPO_ROOT" "$TASK")
+if [ $# -gt 0 ]; then
+    MAKE_ARGS+=("$@")
+fi
+exec make "${MAKE_ARGS[@]}"

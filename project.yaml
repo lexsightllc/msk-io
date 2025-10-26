@@ -1,0 +1,18 @@
+name: msk-io
+primary_language: python
+package_manager: pip
+runtime:
+  python: "3.11"
+entrypoints:
+  api: python -m uvicorn msk_io.api:app --host 0.0.0.0 --port 8000
+  cli: python -m msk_io.cli
+ports:
+  - 8000
+service_type: api
+owners:
+  - team-platform@example.com
+  - imaging-lab@example.com
+notes:
+  scripts: use the commands under scripts/ or `make` to manage workflows
+  deviations:
+    - The repository includes prototype apps under apps/ that follow their respective framework conventions.

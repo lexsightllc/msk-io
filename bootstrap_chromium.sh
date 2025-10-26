@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bootstrap Chromium by extracting a local archive if a system install is missing.
-set -e
+set -euo pipefail
 
 CHROMIUM_CMDS=("chromium-browser" "chromium" "google-chrome")
 
@@ -12,7 +12,7 @@ for cmd in "${CHROMIUM_CMDS[@]}"; do
 done
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-RES_DIR="$SCRIPT_DIR/resources/chromium"
+RES_DIR="$SCRIPT_DIR/assets/resources/chromium"
 ARCHIVE="$RES_DIR/chromium.tar.xz"
 
 if [ -f "$ARCHIVE" ]; then
@@ -24,7 +24,7 @@ if [ -f "$ARCHIVE" ]; then
     exit 0
 fi
 
-if command -v python3 >/dev/null 2>&1; then
+if command -v python3 >/dev/null 2.>&1; then
     python3 "$SCRIPT_DIR/bootstrap_chromium.py" "$RES_DIR"
 else
     echo "chromium not found and no Python fallback available" >&2

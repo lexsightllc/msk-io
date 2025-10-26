@@ -1,100 +1,47 @@
+# Python
 __pycache__/
-**/__pycache__/
 *.pyc
-# virtualenvs and environments
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.build/
+/.venv/
 venv/
-.venv/
-.venv/bin/activate*
 .env
 .env.*
-
-# py test caches
-.pytest_cache/
-.mypy_cache/
-
-# generic cache
-.cache/
-
-# coverage files
-.coverage
+.envrc
+coverage.xml
 htmlcov/
-coverage/
-
-# log files
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 *.log
+logs/
 
-# build artifacts
-build/
+# Build artifacts
 dist/
-*.egg-info/
-
-docs/_build/
+build/
+*.egg
 
 # IDEs
 .vscode/
-.vscode/**
 .idea/
-.idea/**
-.ropeproject/
+*.swp
 
-# generated data
-*.nii
-*.nii.gz
-*.png
-# model weights and caches
-*.h5
-*.ckpt
-*.pt
-*.pth
-weights/
-checkpoints/
-model_cache/
+# Generated docs
+/docs/api/
 
-# local credentials
-*.key
-*.pem
-*.crt
-secrets.yml
-secrets.toml
+# SBOMs and scans
+sbom/*.json
 
-# downloaded resources
-atlas*/
-*.zip
-*.tar.gz
+# Node
+node_modules/
 
-# large imaging data
-dicom_dump/
-*.dcm
-tmp_nifti/
+# Flutter
+**/build/
 
-# notebook and coverage artifacts
-.ipynb_checkpoints/
-coverage.xml
-jupyter_runtime/
-**/jupyter-runtime/
-
-# compiled extensions
-*.so
-*.pyd
-*.c
-*.cpp
-
-# container metadata
-docker-compose.yml
-*.env.docker
-k8s/
-docker/
-
-
-# vector store shards
-.faiss/
-.annoy/
-# PDF caches
-pdf_png_cache/
-ocr_cache/
-# CLI logs
-logs/
-logs/*.json
-vector_store/
-.vscode/state/
-docker_state/
+# Misc
+data/
+.DS_Store

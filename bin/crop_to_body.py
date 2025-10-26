@@ -8,7 +8,7 @@ import nibabel as nib
 import numpy as np
 import typer
 
-from totalsegmentatorv2.cropping import crop_to_mask
+from msk_io.segmentation.totalsegmentatorv2.cropping import crop_to_mask
 
 app = typer.Typer(add_completion=False)
 
