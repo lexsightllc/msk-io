@@ -1,0 +1,100 @@
+__pycache__/
+**/__pycache__/
+*.pyc
+# virtualenvs and environments
+venv/
+.venv/
+.venv/bin/activate*
+.env
+.env.*
+
+# py test caches
+.pytest_cache/
+.mypy_cache/
+
+# generic cache
+.cache/
+
+# coverage files
+.coverage
+htmlcov/
+coverage/
+
+# log files
+*.log
+
+# build artifacts
+build/
+dist/
+*.egg-info/
+
+docs/_build/
+
+# IDEs
+.vscode/
+.vscode/**
+.idea/
+.idea/**
+.ropeproject/
+
+# generated data
+*.nii
+*.nii.gz
+*.png
+# model weights and caches
+*.h5
+*.ckpt
+*.pt
+*.pth
+weights/
+checkpoints/
+model_cache/
+
+# local credentials
+*.key
+*.pem
+*.crt
+secrets.yml
+secrets.toml
+
+# downloaded resources
+atlas*/
+*.zip
+*.tar.gz
+
+# large imaging data
+dicom_dump/
+*.dcm
+tmp_nifti/
+
+# notebook and coverage artifacts
+.ipynb_checkpoints/
+coverage.xml
+jupyter_runtime/
+**/jupyter-runtime/
+
+# compiled extensions
+*.so
+*.pyd
+*.c
+*.cpp
+
+# container metadata
+docker-compose.yml
+*.env.docker
+k8s/
+docker/
+
+
+# vector store shards
+.faiss/
+.annoy/
+# PDF caches
+pdf_png_cache/
+ocr_cache/
+# CLI logs
+logs/
+logs/*.json
+vector_store/
+.vscode/state/
+docker_state/
