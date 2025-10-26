@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from typing import Dict, List, Literal, Optional
 from pydantic import Field
 

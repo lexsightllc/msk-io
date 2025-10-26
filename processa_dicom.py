@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: MPL-2.0
 """Download a DICOM series from an OHIF viewer and save as NIfTI."""
 from __future__ import annotations
 

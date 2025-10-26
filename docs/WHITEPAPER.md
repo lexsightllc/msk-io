@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # Offline Multimodal Diagnostic Pipeline
 
 This canonical whitepaper standardizes module naming across the symbolic offline diagnostic system. Components such as `SymbolicStateEmitter`, `SymbioticAffinityGraph`, and `RecursiveInvarianceMonitor` are capitalized and presented in monospace for clarity and interoperability.

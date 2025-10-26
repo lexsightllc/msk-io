@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 # Configuration file for Medical Image Analysis Pipeline
 # Requirements: Pillow, numpy, scikit-image, matplotlib
 

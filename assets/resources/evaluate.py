@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Placeholder evaluation utilities for segmentation outputs."""
 from __future__ import annotations
 

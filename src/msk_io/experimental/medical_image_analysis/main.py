@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Main Script
 This script orchestrates the complete medical image analysis workflow.

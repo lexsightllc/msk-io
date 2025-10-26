@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 import os
 import logging
 from pydantic import Field, SecretStr, ValidationError

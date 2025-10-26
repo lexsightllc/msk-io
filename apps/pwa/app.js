@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 function checkLicense() {
     return localStorage.getItem('license') === 'valid';
 }

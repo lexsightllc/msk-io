@@ -1,0 +1,17 @@
+MSK-IO NOTICE
+=============
+
+ProjectName © 2025 Augusto 'Guto' Ochoa Ughini
+
+This distribution of MSK-IO is licensed under the Mozilla Public License 2.0.
+See the accompanying LICENSE file for the full terms.
+
+Third-Party Components
+----------------------
+MSK-IO depends on a number of third-party libraries that remain under their
+original licenses. The complete list of Python dependencies and their licenses
+can be generated via `pip-licenses` or inspected in `configs/python/requirements-lock.txt`.
+No GPL-only code or other copyleft-incompatible components are bundled in this
+repository. When distributing binaries or source, include this NOTICE alongside
+LICENSE and reproduce any third-party license notices from dependent packages as
+required by their respective terms.

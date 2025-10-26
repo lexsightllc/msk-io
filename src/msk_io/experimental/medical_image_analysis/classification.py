@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """
 Medical Image Analysis Pipeline - Classification Module
 This module handles structure classification and diagnostic suggestions.

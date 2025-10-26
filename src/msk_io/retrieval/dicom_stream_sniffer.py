@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 import os
 import shutil
 from typing import List, Dict, Any, Optional

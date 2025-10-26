@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Utilities for loading and saving images."""
 from __future__ import annotations
 

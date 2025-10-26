@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 Place a compressed Chromium archive named ``chromium.tar.xz`` in this directory.
 The bootstrap scripts will extract it to ``assets/resources/chromium/bin`` when no
 system Chromium install is detected. After adding the archive you can execute

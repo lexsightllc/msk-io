@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Segmentation helpers wrapping TotalSegmentator v2 primitives."""
 
 from msk_io.segmentation.totalsegmentatorv2.alignment import (

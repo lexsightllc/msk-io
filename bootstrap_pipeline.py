@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
 """Bootstrap MSK_IO under constrained environments.
 
 This helper validates the bundled Chromium archive, extracts it via

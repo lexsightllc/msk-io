@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Simplified agent abstraction used by the Varkiel framework."""
 from __future__ import annotations
 

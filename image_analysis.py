@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Run segmentation and mapping on a DICOM series."""
 from __future__ import annotations
 

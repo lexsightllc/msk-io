@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Handle prompt templates and variable substitution."""
 from __future__ import annotations
 

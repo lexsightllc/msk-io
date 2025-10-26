@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Lightweight agent runtime used for PDF processing utilities."""
 
 from msk_io.runtime.agent import Agent

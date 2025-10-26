@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Minimal multi-agent runner."""
 from __future__ import annotations
 

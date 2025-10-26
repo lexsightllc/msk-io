@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Utility components used by the demo image pipeline."""
 
 from msk_io.image_pipeline.image_generator import ImageGenerator

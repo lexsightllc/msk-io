@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 from typing import List, Literal, Optional, Dict, Any
 from datetime import datetime
 from uuid import uuid4

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MPL-2.0
 # Bootstrap Chromium by extracting a local archive if a system install is missing.
 set -euo pipefail
 

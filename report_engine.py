@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Fuse pipeline outputs into a simple report."""
 from __future__ import annotations
 

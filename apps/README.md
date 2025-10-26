@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # Prototype Applications
 
 This folder collects experimental clients that integrate with the MSK-IO APIs:

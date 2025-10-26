@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MPL-2.0
 """Fallback helper to unpack a local Chromium archive.
 
 Run by bootstrap_chromium.sh when a system Chromium is absent.

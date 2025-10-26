@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sign') {
         console.log('Signing content...');

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Fetch web pages for prompt enrichment."""
 from __future__ import annotations
 

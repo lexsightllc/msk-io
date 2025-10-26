@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # Medical Image Analysis Pipeline
 A comprehensive Python pipeline for automated medical image analysis, supporting both CT and MRI modalities with segmentation, feature extraction, classification, and automated reporting capabilities.
 
