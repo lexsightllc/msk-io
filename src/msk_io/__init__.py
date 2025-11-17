@@ -6,8 +6,9 @@ This package provides the core components for processing medical imaging data,
 integrating with Large Language Models (LLMs), and generating diagnostic insights.
 """
 import logging
-from .utils.log_config import setup_logging
+
 from .config import AppConfig
+from .utils.log_config import setup_logging
 
 # Setup logging as soon as the package is imported
 setup_logging()

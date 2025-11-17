@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MPL-2.0
-from typing import Any, Dict, List, Literal, Optional
 from datetime import datetime
+from typing import Any, Literal
 from uuid import uuid4
+
 from pydantic import Field
 
 from msk_io.schema._pydantic_base import MSKIOBaseModel
@@ -11,10 +12,10 @@ class LLMInput(MSKIOBaseModel):
     """Represents the structured input provided to an LLM."""
 
     prompt_text: str
-    context_data: Dict[str, Any] = Field(default_factory=dict)
-    model_name: Optional[str] = None
-    temperature: Optional[float] = None
-    max_tokens: Optional[int] = None
+    context_data: dict[str, Any] = Field(default_factory=dict)
+    model_name: str | None = None
+    temperature: float | None = None
+    max_tokens: int | None = None
 
 
 class LLMResponseChoice(MSKIOBaseModel):
@@ -22,8 +23,8 @@ class LLMResponseChoice(MSKIOBaseModel):
 
     text: str
     index: int
-    logprobs: Optional[float] = None
-    finish_reason: Optional[str] = None
+    logprobs: float | None = None
+    finish_reason: str | None = None
 
 
 class LLMOutput(MSKIOBaseModel):
@@ -35,8 +36,8 @@ class LLMOutput(MSKIOBaseModel):
     input_tokens: int
     output_tokens: int
     total_tokens: int
-    choices: List[LLMResponseChoice]
-    raw_response: Dict[str, Any] = Field(default_factory=dict)
+    choices: list[LLMResponseChoice]
+    raw_response: dict[str, Any] = Field(default_factory=dict)
 
 
 class DiagnosticFinding(MSKIOBaseModel):
@@ -47,9 +48,9 @@ class DiagnosticFinding(MSKIOBaseModel):
     description: str
     severity: Literal["CRITICAL", "HIGH", "MEDIUM", "LOW", "NORMAL"]
     confidence_score: float = Field(..., ge=0.0, le=1.0)
-    associated_roi_ids: List[str] = Field(default_factory=list)
-    supporting_evidence_texts: List[str] = Field(default_factory=list)
-    recommended_action: Optional[str] = None
+    associated_roi_ids: list[str] = Field(default_factory=list)
+    supporting_evidence_texts: list[str] = Field(default_factory=list)
+    recommended_action: str | None = None
 
 
 class LLMAnalysisResult(MSKIOBaseModel):
@@ -57,10 +58,10 @@ class LLMAnalysisResult(MSKIOBaseModel):
 
     analysis_id: str = Field(default_factory=lambda: str(uuid4()))
     llm_output: LLMOutput
-    extracted_findings: List[DiagnosticFinding]
+    extracted_findings: list[DiagnosticFinding]
     summary: str
     status: Literal["SUCCESS", "FAILURE", "PARTIAL_SUCCESS"] = "SUCCESS"
-    errors: List[Dict[str, Any]] = Field(default_factory=list)
+    errors: list[dict[str, Any]] = Field(default_factory=list)
 
     def add_finding(self, finding: DiagnosticFinding) -> None:
         self.extracted_findings.append(finding)

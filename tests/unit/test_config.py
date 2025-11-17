@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: MPL-2.0
-import pytest
-import os
 import logging
+import os
 from unittest.mock import patch
-from pydantic import ValidationError, SecretStr
 
-from msk_io.config import AppConfig, load_config, AppSettings, LLMSettings
+import pytest
+
+from msk_io.config import load_config
 from msk_io.errors import ConfigurationError
-from msk_io.utils.log_config import setup_logging
 
 
 @pytest.fixture(autouse=True)
@@ -119,12 +118,12 @@ def test_app_config_directory_creation(tmp_path):
 
 
 def test_app_config_logging_setup_on_load():
-    with patch('msk_io.config.setup_logging') as mock_setup_logging:
+    with patch("msk_io.config.setup_logging") as mock_setup_logging:
         config = load_config()
         mock_setup_logging.assert_called_once()
         args, kwargs = mock_setup_logging.call_args
-        assert kwargs['level'] == logging.INFO
-        assert kwargs['log_file'] == config.app.log_file_path
+        assert kwargs["level"] == logging.INFO
+        assert kwargs["log_file"] == config.app.log_file_path
 
 
 def test_app_config_log_level_changes_logging(tmp_path):
@@ -132,15 +131,16 @@ def test_app_config_log_level_changes_logging(tmp_path):
     os.environ["MSKIO_APP_LOG_LEVEL"] = "DEBUG"
     os.environ["MSKIO_APP_LOG_FILE_PATH"] = str(log_file)
 
-    with patch('msk_io.config.setup_logging') as mock_setup_logging:
+    with patch("msk_io.config.setup_logging") as mock_setup_logging:
         config = load_config()
-        mock_setup_logging.assert_called_once_with(level=logging.DEBUG, log_file=str(log_file))
+        mock_setup_logging.assert_called_once_with(
+            level=logging.DEBUG, log_file=str(log_file)
+        )
 
 
 def test_secret_str_redaction():
     os.environ["MSKIO_LLM_OPENAI_API_KEY"] = "my_super_secret_key"
     config = load_config()
-    config_dict = config.model_dump(mode='json', exclude_sensitive=True)
-    assert config_dict['llm']['openai_api_key'] == "********"
+    config_dict = config.model_dump(mode="json", exclude_sensitive=True)
+    assert config_dict["llm"]["openai_api_key"] == "********"
     assert config.llm.openai_api_key.get_secret_value() == "my_super_secret_key"
-

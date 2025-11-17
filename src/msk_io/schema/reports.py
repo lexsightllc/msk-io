@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
-from typing import Any, Dict, List, Literal, Optional
 from datetime import datetime
+from typing import Literal
 from uuid import uuid4
+
 from pydantic import Field
 
 from msk_io.schema._pydantic_base import MSKIOBaseModel
 from msk_io.schema.dicom_data import (
     DICOMPatientInfo,
     DICOMStudyInfo,
-    DICOMSeriesInfo,
     DICOMVolume,
 )
-from msk_io.schema.image_analysis import ImageAnalysisResult, RegionOfInterest
+from msk_io.schema.image_analysis import ImageAnalysisResult
 from msk_io.schema.llm_output import DiagnosticFinding, LLMAnalysisResult
 
 
@@ -19,8 +19,8 @@ class Attachment(MSKIOBaseModel):
     """Represents a file attachment to the final report."""
 
     file_path: str
-    description: Optional[str] = None
-    mime_type: Optional[str] = None
+    description: str | None = None
+    mime_type: str | None = None
 
 
 class DiagnosticReport(MSKIOBaseModel):
@@ -31,14 +31,14 @@ class DiagnosticReport(MSKIOBaseModel):
     study_info: DICOMStudyInfo
     report_date: datetime = Field(default_factory=datetime.now)
     overall_conclusion: str
-    diagnostic_findings: List[DiagnosticFinding] = Field(default_factory=list)
-    associated_volumes: List[DICOMVolume] = Field(default_factory=list)
-    image_analysis_summaries: List[ImageAnalysisResult] = Field(default_factory=list)
-    llm_analysis_summaries: List[LLMAnalysisResult] = Field(default_factory=list)
-    recommendations: List[str] = Field(default_factory=list)
+    diagnostic_findings: list[DiagnosticFinding] = Field(default_factory=list)
+    associated_volumes: list[DICOMVolume] = Field(default_factory=list)
+    image_analysis_summaries: list[ImageAnalysisResult] = Field(default_factory=list)
+    llm_analysis_summaries: list[LLMAnalysisResult] = Field(default_factory=list)
+    recommendations: list[str] = Field(default_factory=list)
     status: Literal["FINAL", "PRELIMINARY", "PENDING_REVIEW", "ERROR"] = "PRELIMINARY"
-    attachments: List[Attachment] = Field(default_factory=list)
-    reviewer_notes: Optional[str] = None
+    attachments: list[Attachment] = Field(default_factory=list)
+    reviewer_notes: str | None = None
 
     def add_finding(self, finding: DiagnosticFinding) -> None:
         self.diagnostic_findings.append(finding)
@@ -57,4 +57,3 @@ class DiagnosticReport(MSKIOBaseModel):
 
     def add_attachment(self, attachment: Attachment) -> None:
         self.attachments.append(attachment)
-

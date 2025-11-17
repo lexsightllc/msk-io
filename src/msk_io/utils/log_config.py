@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: MPL-2.0
 import logging
 import sys
-from typing import Optional
 
 
 def setup_logging(
     level: int = logging.INFO,
-    log_file: Optional[str] = None,
+    log_file: str | None = None,
     log_format: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     date_format: str = "%Y-%m-%d %H:%M:%S",
 ) -> None:
@@ -20,7 +19,7 @@ def setup_logging(
         level=level,
         format=log_format,
         datefmt=date_format,
-        handlers=[logging.StreamHandler(sys.stdout)]
+        handlers=[logging.StreamHandler(sys.stdout)],
     )
 
     if log_file:
@@ -28,13 +27,15 @@ def setup_logging(
         file_handler.setFormatter(logging.Formatter(log_format, datefmt=date_format))
         logging.root.addHandler(file_handler)
 
-    logging.getLogger('httpx').setLevel(logging.WARNING)
-    logging.getLogger('httpcore').setLevel(logging.WARNING)
-    logging.getLogger('urllib3').setLevel(logging.WARNING)
-    logging.getLogger('asyncio').setLevel(logging.WARNING)
-    logging.getLogger('Pillow').setLevel(logging.WARNING)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("asyncio").setLevel(logging.WARNING)
+    logging.getLogger("Pillow").setLevel(logging.WARNING)
 
-    logging.getLogger(__name__).info(f"Logging configured at level {logging.getLevelName(level)}")
+    logging.getLogger(__name__).info(
+        f"Logging configured at level {logging.getLevelName(level)}"
+    )
     if log_file:
         logging.getLogger(__name__).info(f"Logs also directed to: {log_file}")
 

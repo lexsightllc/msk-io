@@ -1,12 +1,15 @@
 # SPDX-License-Identifier: MPL-2.0
-import pytest
 import os
-import asyncio
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, patch
+
+import pytest
+from uuid import uuid4
+
 from msk_io.api import MSKIOAPI
+from msk_io.errors import MSKIOError
 from msk_io.schema.base import PipelineStatus
 from msk_io.schema.reports import DiagnosticReport
-from msk_io.errors import MSKIOError
+from uuid import uuid4
 
 
 @pytest.fixture

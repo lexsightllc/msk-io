@@ -1,21 +1,22 @@
 # SPDX-License-Identifier: MPL-2.0
 import os
 import shutil
-from typing import List, Dict, Any, Optional
+from datetime import datetime
+
+import httpx
 from pydicom import dcmread
 from pydicom.errors import InvalidDicomError
+
+from msk_io.errors import DataValidationError, ExternalServiceError, RetrievalError
 from msk_io.schema.dicom_data import (
-    DICOMVolume,
     DICOMPatientInfo,
-    DICOMStudyInfo,
     DICOMSeriesInfo,
+    DICOMStudyInfo,
+    DICOMVolume,
 )
-from msk_io.schema.retrieval_info import RetrievedDataInfo, DataSource
-from msk_io.errors import RetrievalError, DataValidationError, ExternalServiceError
-from msk_io.utils.log_config import get_logger
+from msk_io.schema.retrieval_info import DataSource, RetrievedDataInfo
 from msk_io.utils.decorators import handle_errors, log_method_entry_exit
-from datetime import datetime
-import httpx
+from msk_io.utils.log_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -44,10 +45,10 @@ class DICOMStreamSniffer:
     @log_method_entry_exit
     async def discover_and_retrieve_studies(
         self,
-        patient_id: Optional[str] = None,
-        study_uid: Optional[str] = None,
-        local_dicom_path: Optional[str] = None,
-        remote_dicom_url: Optional[str] = None,
+        patient_id: str | None = None,
+        study_uid: str | None = None,
+        local_dicom_path: str | None = None,
+        remote_dicom_url: str | None = None,
     ) -> RetrievedDataInfo:
         """Discovers and retrieves DICOM studies."""
         logger.warning(

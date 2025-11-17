@@ -2,8 +2,8 @@
 """Placeholder image generator."""
 from __future__ import annotations
 
-from PIL import Image
 import numpy as np
+from PIL import Image
 
 
 class ImageGenerator:

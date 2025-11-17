@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
-from msk_io.schema.prompt_template import PromptTemplate, PromptParameter, PromptSet
+from msk_io.schema.prompt_template import PromptParameter, PromptSet, PromptTemplate
 
 DIAGNOSTIC_ASSESSMENT_PROMPT = PromptTemplate(
     template_name="DiagnosticAssessment",
@@ -14,11 +14,24 @@ DIAGNOSTIC_ASSESSMENT_PROMPT = PromptTemplate(
         "Your Assessment (structured JSON preferred):\n"
     ),
     parameters=[
-        PromptParameter(name="patient_info_summary", description="Summary of patient demographics and history.", is_required=True),
-        PromptParameter(name="image_analysis_summary", description="Summary of image segmentation and feature extraction results.", is_required=True),
-        PromptParameter(name="clinical_context", description="Additional relevant clinical notes or lab results.", is_required=False, default_value="No additional context.")
+        PromptParameter(
+            name="patient_info_summary",
+            description="Summary of patient demographics and history.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="image_analysis_summary",
+            description="Summary of image segmentation and feature extraction results.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="clinical_context",
+            description="Additional relevant clinical notes or lab results.",
+            is_required=False,
+            default_value="No additional context.",
+        ),
     ],
-    expected_output_format="JSON"
+    expected_output_format="JSON",
 )
 
 SEGMENTATION_FEEDBACK_PROMPT = PromptTemplate(
@@ -33,10 +46,18 @@ SEGMENTATION_FEEDBACK_PROMPT = PromptTemplate(
         "Your Feedback (structured JSON preferred, e.g., {'errors': [], 'suggestions': []}):\n"
     ),
     parameters=[
-        PromptParameter(name="image_metadata_summary", description="Summary metadata of the original image.", is_required=True),
-        PromptParameter(name="segmentation_details_json", description="JSON representation of segmentation results.", is_required=True),
+        PromptParameter(
+            name="image_metadata_summary",
+            description="Summary metadata of the original image.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="segmentation_details_json",
+            description="JSON representation of segmentation results.",
+            is_required=True,
+        ),
     ],
-    expected_output_format="JSON"
+    expected_output_format="JSON",
 )
 
 REPORT_GENERATION_PROMPT = PromptTemplate(
@@ -55,13 +76,33 @@ REPORT_GENERATION_PROMPT = PromptTemplate(
         "Your Medical Report (structured JSON preferred, conforming to DiagnosticReport schema):\n"
     ),
     parameters=[
-        PromptParameter(name="patient_details_json", description="JSON of patient info.", is_required=True),
-        PromptParameter(name="study_details_json", description="JSON of study info.", is_required=True),
-        PromptParameter(name="findings_list_json", description="JSON list of DiagnosticFinding objects.", is_required=True),
-        PromptParameter(name="image_summaries_json", description="JSON list of ImageAnalysisResult summaries.", is_required=True),
-        PromptParameter(name="llm_summaries_json", description="JSON list of LLMAnalysisResult summaries.", is_required=True),
+        PromptParameter(
+            name="patient_details_json",
+            description="JSON of patient info.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="study_details_json",
+            description="JSON of study info.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="findings_list_json",
+            description="JSON list of DiagnosticFinding objects.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="image_summaries_json",
+            description="JSON list of ImageAnalysisResult summaries.",
+            is_required=True,
+        ),
+        PromptParameter(
+            name="llm_summaries_json",
+            description="JSON list of LLMAnalysisResult summaries.",
+            is_required=True,
+        ),
     ],
-    expected_output_format="JSON"
+    expected_output_format="JSON",
 )
 
 LLM_AGENT_PROMPTS = PromptSet(
@@ -70,9 +111,10 @@ LLM_AGENT_PROMPTS = PromptSet(
     prompts=[
         DIAGNOSTIC_ASSESSMENT_PROMPT,
         SEGMENTATION_FEEDBACK_PROMPT,
-        REPORT_GENERATION_PROMPT
-    ]
+        REPORT_GENERATION_PROMPT,
+    ],
 )
+
 
 def get_prompt_template(template_name: str) -> PromptTemplate:
     for prompt in LLM_AGENT_PROMPTS.prompts:

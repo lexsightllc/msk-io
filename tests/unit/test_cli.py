@@ -1,16 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
+import json
+import logging
+import os
+from unittest.mock import AsyncMock, MagicMock, patch
+from uuid import uuid4
+
 import pytest
 from click.testing import CliRunner
-import os
-import json
-from unittest.mock import patch, MagicMock, AsyncMock
+
 from msk_io.cli import cli
-from msk_io.config import AppConfig
+from msk_io.errors import MSKIOError
 from msk_io.schema.base import PipelineStatus
 from msk_io.schema.reports import DiagnosticReport
-from msk_io.errors import MSKIOError, DataValidationError
-import logging
-import asyncio
 
 
 @pytest.fixture
@@ -23,7 +24,7 @@ def runner():
 def mock_api_and_config(test_config):
     """Mocks the global CONFIG and MSKIOAPI for CLI tests."""
     mock_pipeline_status = PipelineStatus(
-        pipeline_id="mock_pipeline_id",
+        pipeline_id=uuid4(),
         overall_status="COMPLETED_SUCCESS",
         overall_message="Mock pipeline completed successfully.",
         final_report_path=os.path.join(
@@ -47,9 +48,10 @@ def mock_api_and_config(test_config):
     mock_api.get_pipeline_status = AsyncMock(return_value=mock_pipeline_status)
     mock_api.get_diagnostic_report = AsyncMock(return_value=mock_diagnostic_report)
 
-    with patch("msk_io.CONFIG", new=test_config), patch(
-        "msk_io.api.MSKIOAPI", return_value=mock_api
-    ) as MockMSKIOAPI:
+    with (
+        patch("msk_io.CONFIG", new=test_config),
+        patch("msk_io.api.MSKIOAPI", return_value=mock_api) as MockMSKIOAPI,
+    ):
         yield runner, mock_api, test_config
 
 
@@ -123,14 +125,12 @@ def test_cli_monitor_success(runner, mock_api_and_config):
     mock_monitor_instance.start_monitoring = MagicMock()
     mock_monitor_instance.stop_monitoring = MagicMock()
 
-    with patch(
-        "msk_io.cli.DirectoryMonitor", return_value=mock_monitor_instance
-    ), patch("time.sleep", side_effect=KeyboardInterrupt), patch(
-        "asyncio.new_event_loop"
-    ), patch(
-        "asyncio.set_event_loop"
-    ), patch(
-        "asyncio.run"
+    with (
+        patch("msk_io.cli.DirectoryMonitor", return_value=mock_monitor_instance),
+        patch("time.sleep", side_effect=KeyboardInterrupt),
+        patch("asyncio.new_event_loop"),
+        patch("asyncio.set_event_loop"),
+        patch("asyncio.run"),
     ):
         result = runner.invoke(cli, ["monitor", "-i", "1"])
         assert "Monitoring directory:" in result.output

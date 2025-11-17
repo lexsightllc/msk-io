@@ -1,12 +1,13 @@
 # SPDX-License-Identifier: MPL-2.0
 import json
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+
+from msk_io.errors import MSKIOError
 from msk_io.io_pipeline import MSKIOPipeline
 from msk_io.schema.base import PipelineStatus
 from msk_io.schema.reports import DiagnosticReport
-from msk_io.utils.log_config import get_logger
 from msk_io.utils.decorators import handle_errors, log_method_entry_exit
+from msk_io.utils.log_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -20,9 +21,9 @@ class MSKIOAPI:
     @log_method_entry_exit
     async def process_medical_data(
         self,
-        input_file_path: Optional[str] = None,
-        remote_dicom_url: Optional[str] = None,
-        patient_id: Optional[str] = None,
+        input_file_path: str | None = None,
+        remote_dicom_url: str | None = None,
+        patient_id: str | None = None,
     ) -> PipelineStatus:
         logger.info(
             f"API call to process medical data: Input File: {input_file_path}, Remote URL: {remote_dicom_url}, Patient ID: {patient_id}"
@@ -35,7 +36,7 @@ class MSKIOAPI:
 
     @handle_errors
     @log_method_entry_exit
-    async def get_pipeline_status(self, pipeline_id: str) -> Optional[PipelineStatus]:
+    async def get_pipeline_status(self, pipeline_id: str) -> PipelineStatus | None:
         logger.warning(
             f"API call to get pipeline status for ID: {pipeline_id}. This is a conceptual stub."
         )
@@ -55,12 +56,10 @@ class MSKIOAPI:
 
     @handle_errors
     @log_method_entry_exit
-    async def get_diagnostic_report(
-        self, report_path: str
-    ) -> Optional[DiagnosticReport]:
+    async def get_diagnostic_report(self, report_path: str) -> DiagnosticReport | None:
         logger.info(f"API call to retrieve diagnostic report from: {report_path}")
         try:
-            with open(report_path, "r", encoding="utf-8") as f:
+            with open(report_path, encoding="utf-8") as f:
                 report_data = json.load(f)
             return DiagnosticReport.model_validate(report_data)
         except FileNotFoundError:
