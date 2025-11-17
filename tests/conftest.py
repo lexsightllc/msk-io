@@ -1,18 +1,21 @@
 # SPDX-License-Identifier: MPL-2.0
-import pytest
+import logging
 import os
 import shutil
-from unittest.mock import MagicMock
-from datetime import date, time
-import logging
-import pydicom
-from pydicom import Dataset, uid
-from pydicom.sequence import Sequence
+from datetime import date
+
+import pytest
+from pydicom import uid
 from pydicom.dataset import FileDataset, FileMetaDataset
 
-from msk_io.config import AppConfig, load_config
+from msk_io.config import load_config
+from msk_io.schema.dicom_data import (
+    DICOMPatientInfo,
+    DICOMSeriesInfo,
+    DICOMStudyInfo,
+    DICOMVolume,
+)
 from msk_io.utils.log_config import setup_logging
-from msk_io.schema.dicom_data import DICOMVolume, DICOMPatientInfo, DICOMStudyInfo, DICOMSeriesInfo
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -38,13 +41,21 @@ def test_config(manage_test_base_dir):
 
     os.environ["MSKIO_APP_WATCH_DIRECTORY"] = os.path.join(test_base_dir, "watch")
     os.environ["MSKIO_APP_OUTPUT_DIRECTORY"] = os.path.join(test_base_dir, "output")
-    os.environ["MSKIO_RETRIEVAL_DATA_DOWNLOAD_DIR"] = os.path.join(test_base_dir, "downloads")
+    os.environ["MSKIO_RETRIEVAL_DATA_DOWNLOAD_DIR"] = os.path.join(
+        test_base_dir, "downloads"
+    )
     os.environ["MSKIO_IMG_IMAGE_CACHE_DIR"] = os.path.join(test_base_dir, "img_cache")
-    os.environ["MSKIO_INDEXER_VECTOR_DB_PATH"] = os.path.join(test_base_dir, "vectordb_mock.db")
+    os.environ["MSKIO_INDEXER_VECTOR_DB_PATH"] = os.path.join(
+        test_base_dir, "vectordb_mock.db"
+    )
     os.environ["MSKIO_LLM_OPENAI_API_KEY"] = "sk-test-openai-key"
     os.environ["MSKIO_LLM_GOOGLE_API_KEY"] = "test-google-key"
-    os.environ["MSKIO_IMG_DEFAULT_SEGMENTATION_MODEL_PATH"] = os.path.join(test_base_dir, "dummy_model.pth")
-    os.environ["MSKIO_APP_LOG_FILE_PATH"] = os.path.join(test_base_dir, "test_msk_io.log")
+    os.environ["MSKIO_IMG_DEFAULT_SEGMENTATION_MODEL_PATH"] = os.path.join(
+        test_base_dir, "dummy_model.pth"
+    )
+    os.environ["MSKIO_APP_LOG_FILE_PATH"] = os.path.join(
+        test_base_dir, "test_msk_io.log"
+    )
 
     with open(os.environ["MSKIO_IMG_DEFAULT_SEGMENTATION_MODEL_PATH"], "w") as f:
         f.write("DUMMY MODEL CONTENT")
@@ -140,7 +151,9 @@ def create_sample_data_dir():
         ds.save_as(filename)
         print(f"Created dummy DICOM file for testing at: {filename}")
     except ImportError:
-        print("Pydicom not installed. Cannot create dummy DICOM file. Some tests may fail.")
+        print(
+            "Pydicom not installed. Cannot create dummy DICOM file. Some tests may fail."
+        )
         with open(os.path.join(sample_data_dir, "sample_dicom.dcm"), "w") as f:
             f.write("DUMMY DICOM CONTENT (No Pydicom)")
     yield

@@ -1,19 +1,13 @@
 # SPDX-License-Identifier: MPL-2.0
-import pytest
 import os
-import shutil
-from unittest.mock import patch, MagicMock, AsyncMock
-from msk_io.retrieval.dicom_stream_sniffer import DICOMStreamSniffer
-from msk_io.schema.retrieval_info import RetrievedDataInfo, DataSource
-from msk_io.schema.dicom_data import (
-    DICOMVolume,
-    DICOMPatientInfo,
-    DICOMStudyInfo,
-    DICOMSeriesInfo,
-)
-from msk_io.errors import RetrievalError, DataValidationError, ExternalServiceError
-from datetime import datetime, date
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import httpx
+import pytest
+
+from msk_io.errors import DataValidationError, ExternalServiceError, RetrievalError
+from msk_io.retrieval.dicom_stream_sniffer import DICOMStreamSniffer
+from msk_io.schema.retrieval_info import RetrievedDataInfo
 
 
 @pytest.fixture
@@ -47,9 +41,10 @@ async def test_discover_and_retrieve_studies_local_success(
     )
     assert os.path.exists(dummy_dicom_path)
 
-    with patch("msk_io.retrieval.dicom_stream_sniffer.dcmread") as mock_dcmread, patch(
-        "msk_io.retrieval.dicom_stream_sniffer.shutil.copy"
-    ) as mock_copy:
+    with (
+        patch("msk_io.retrieval.dicom_stream_sniffer.dcmread") as mock_dcmread,
+        patch("msk_io.retrieval.dicom_stream_sniffer.shutil.copy") as mock_copy,
+    ):
         mock_ds = MagicMock()
         mock_ds.PatientID = "TEST_PATIENT_LOCAL"
         mock_ds.PatientName = "Test^Patient"
@@ -103,11 +98,12 @@ async def test_discover_and_retrieve_studies_remote_success(
     remote_url = "http://example.com/remote_dicom.dcm"
     mock_response_content = b"DCM_FILE_CONTENT"
 
-    with patch(
-        "msk_io.retrieval.dicom_stream_sniffer.httpx.AsyncClient"
-    ) as MockAsyncClient, patch(
-        "msk_io.retrieval.dicom_stream_sniffer.dcmread"
-    ) as mock_dcmread:
+    with (
+        patch(
+            "msk_io.retrieval.dicom_stream_sniffer.httpx.AsyncClient"
+        ) as MockAsyncClient,
+        patch("msk_io.retrieval.dicom_stream_sniffer.dcmread") as mock_dcmread,
+    ):
         mock_client_instance = AsyncMock()
         mock_response = AsyncMock()
         mock_response.content = mock_response_content

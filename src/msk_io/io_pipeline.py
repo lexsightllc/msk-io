@@ -1,24 +1,14 @@
 # SPDX-License-Identifier: MPL-2.0
 import os
-from typing import Dict, Any, List, Literal, Optional
 from uuid import uuid4
 
-from msk_io.schema.base import PipelineStatus, FileInfo
-from msk_io.schema.task_definitions import TaskDefinition, AgentInstruction
-from msk_io.schema.dicom_data import (
-    DICOMVolume,
-    DICOMPatientInfo,
-    DICOMStudyInfo,
-    DICOMSeriesInfo,
-)
-from msk_io.schema.image_analysis import ImageAnalysisResult
-from msk_io.schema.llm_output import LLMAnalysisResult, DiagnosticFinding
-from msk_io.schema.reports import DiagnosticReport
-from msk_io.control.multi_agent_harmonizer import MultiAgentHarmonizer
-from msk_io.errors import MSKIOError, ProcessingError, DataValidationError
-from msk_io.utils.log_config import get_logger
-from msk_io.utils.decorators import handle_errors, log_method_entry_exit
 from msk_io import CONFIG
+from msk_io.control.multi_agent_harmonizer import MultiAgentHarmonizer
+from msk_io.errors import DataValidationError, MSKIOError
+from msk_io.schema.base import FileInfo, PipelineStatus
+from msk_io.schema.task_definitions import AgentInstruction, TaskDefinition
+from msk_io.utils.decorators import handle_errors, log_method_entry_exit
+from msk_io.utils.log_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -39,9 +29,9 @@ class MSKIOPipeline:
     @log_method_entry_exit
     async def run_full_pipeline(
         self,
-        input_file_path: Optional[str] = None,
-        remote_dicom_url: Optional[str] = None,
-        patient_id: Optional[str] = None,
+        input_file_path: str | None = None,
+        remote_dicom_url: str | None = None,
+        patient_id: str | None = None,
     ) -> PipelineStatus:
         if not input_file_path and not remote_dicom_url:
             raise DataValidationError(

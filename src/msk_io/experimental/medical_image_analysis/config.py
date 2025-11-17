@@ -17,7 +17,7 @@ MODALITY_PARAMS = {
         "classification_area_threshold": 5000,
         "classification_intensity_threshold": 100,
         "benign_area_threshold": 1000,
-        "benign_intensity_threshold": 150
+        "benign_intensity_threshold": 150,
     },
     "MRI": {
         "normalization_range": (55, 255),
@@ -27,8 +27,8 @@ MODALITY_PARAMS = {
         "classification_area_threshold": 4000,
         "classification_intensity_threshold": 120,
         "benign_area_threshold": 1200,
-        "benign_intensity_threshold": 180
-    }
+        "benign_intensity_threshold": 180,
+    },
 }
 
 # Default file paths

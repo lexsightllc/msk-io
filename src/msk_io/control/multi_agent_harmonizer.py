@@ -1,21 +1,18 @@
 # SPDX-License-Identifier: MPL-2.0
 import asyncio
 import json
-from typing import Dict, Any, List, Type, Optional
-from datetime import datetime
+from typing import Any
 
+from msk_io.errors import AgentOrchestrationError, ProcessingError
 from msk_io.schema.base import PipelineStatus, TaskStatus
+from msk_io.schema.reports import DiagnosticReport
 from msk_io.schema.task_definitions import (
     AgentInstruction,
     AgentResponse,
     TaskDefinition,
 )
-from msk_io.schema.reports import DiagnosticReport
-from msk_io.schema.synthesis import MultiModalSynthesisResult
-from msk_io.errors import AgentOrchestrationError, ProcessingError
-from msk_io.utils.log_config import get_logger
 from msk_io.utils.decorators import handle_errors, log_method_entry_exit
-from msk_io import CONFIG
+from msk_io.utils.log_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -29,7 +26,7 @@ class Agent:
         self.logger = get_logger(f"agent.{self.name}")
 
     async def execute_instruction(
-        self, instruction: AgentInstruction, pipeline_context: Dict[str, Any]
+        self, instruction: AgentInstruction, pipeline_context: dict[str, Any]
     ) -> AgentResponse:
         """Executes a specific instruction for this agent."""
         self.logger.info(
@@ -94,8 +91,8 @@ class Agent:
             )
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         """Internal method to process specific commands."""
         raise NotImplementedError("Subclasses must implement _process_command.")
 
@@ -112,8 +109,8 @@ class RetrievalAgent(Agent):
         self.ohif_extractor = OHIFCanvasExtractor(config)
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         if command == "RETRIEVE_DICOM_STUDY":
             patient_id = parameters.get("patient_id")
             study_uid = parameters.get("study_uid")
@@ -144,8 +141,8 @@ class ImageProcessingAgent(Agent):
 
     def __init__(self, config):
         super().__init__("ImageProcessingAgent", config)
-        from msk_io.image_processing.segmentor import Segmentor
         from msk_io.image_processing.dl_segmentor import DLSegmentor
+        from msk_io.image_processing.segmentor import Segmentor
         from msk_io.image_processing.totalsegmentatorv2 import TotalSegmentatorV2
 
         self.basic_segmentor = Segmentor(config)
@@ -153,8 +150,8 @@ class ImageProcessingAgent(Agent):
         self.total_segmentator = TotalSegmentatorV2(config)
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         from msk_io.schema.dicom_data import DICOMVolume
 
         if command == "PERFORM_BASIC_SEGMENTATION":
@@ -196,8 +193,8 @@ class LLMInferenceAgent(Agent):
         self.get_prompt_template = get_prompt_template
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         if command == "ANALYZE_WITH_LLM":
             agent_type = parameters.get("agent_type", self.config.llm.default_llm_model)
             prompt_template_name = parameters["prompt_template_name"]
@@ -222,8 +219,8 @@ class SemanticIndexingAgent(Agent):
         self.semantic_indexer = SemanticIndexer(config)
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         if command == "INDEX_DOCUMENT":
             doc_id = parameters["doc_id"]
             text_content = parameters["text_content"]
@@ -248,20 +245,19 @@ class ReportingAgent(Agent):
 
     def __init__(self, config):
         super().__init__("ReportingAgent", config)
-        from msk_io.schema.reports import DiagnosticReport
-        from msk_io.inference.prompts.agent_prompts import get_prompt_template
         from msk_io.inference.llm_agents import LLMAgentFactory
+        from msk_io.inference.prompts.agent_prompts import get_prompt_template
 
         self.get_prompt_template = get_prompt_template
         self.llm_agent_factory = LLMAgentFactory
 
     async def _process_command(
-        self, command: str, parameters: Dict[str, Any], pipeline_context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, command: str, parameters: dict[str, Any], pipeline_context: dict[str, Any]
+    ) -> dict[str, Any]:
         if command == "GENERATE_DIAGNOSTIC_REPORT":
             from msk_io.schema.dicom_data import DICOMPatientInfo, DICOMStudyInfo
-            from msk_io.schema.llm_output import DiagnosticFinding, LLMAnalysisResult
             from msk_io.schema.image_analysis import ImageAnalysisResult
+            from msk_io.schema.llm_output import DiagnosticFinding, LLMAnalysisResult
 
             patient_info = DICOMPatientInfo.model_validate(parameters["patient_info"])
             study_info = DICOMStudyInfo.model_validate(parameters["study_info"])
@@ -371,7 +367,7 @@ class MultiAgentHarmonizer:
 
     def __init__(self, config):
         self.config = config
-        self.agents: Dict[str, Agent] = {
+        self.agents: dict[str, Agent] = {
             "retrieval": RetrievalAgent(config),
             "image_processing": ImageProcessingAgent(config),
             "llm_inference": LLMInferenceAgent(config),
@@ -394,7 +390,7 @@ class MultiAgentHarmonizer:
             pipeline_id=task_definition.task_id,
             overall_message=f"Starting pipeline for task: {task_definition.task_name}",
         )
-        pipeline_context: Dict[str, Any] = {}
+        pipeline_context: dict[str, Any] = {}
 
         self.logger.info(
             f"Starting pipeline '{task_definition.task_name}' (ID: {task_definition.task_id})..."
@@ -438,9 +434,9 @@ class MultiAgentHarmonizer:
                                 ImageSegmentationResult,
                             )
 
-                            pipeline_context[
-                                key
-                            ] = ImageSegmentationResult.model_validate(value)
+                            pipeline_context[key] = (
+                                ImageSegmentationResult.model_validate(value)
+                            )
                         elif key == "llm_analysis_result":
                             from msk_io.schema.llm_output import LLMAnalysisResult
 

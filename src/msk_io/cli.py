@@ -1,16 +1,16 @@
 # SPDX-License-Identifier: MPL-2.0
 import asyncio
-import click
-import os
 import json
-import time
 import logging
-from typing import Optional
+import os
+import time
+
+import click
+
 from msk_io.api import MSKIOAPI
-from msk_io.watch.directory_monitor import DirectoryMonitor
+from msk_io.errors import DataValidationError, MSKIOError
 from msk_io.utils.log_config import get_logger, setup_logging
-from msk_io.errors import MSKIOError, ConfigurationError, DataValidationError
-from msk_io import CONFIG
+from msk_io.watch.directory_monitor import DirectoryMonitor
 
 logger = get_logger(__name__)
 

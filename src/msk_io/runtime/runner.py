@@ -2,7 +2,7 @@
 """Minimal multi-agent runner."""
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 from msk_io.runtime.agent import Agent
 from msk_io.runtime.context import Context

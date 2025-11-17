@@ -7,9 +7,10 @@ This script demonstrates various ways to use the medical image analysis pipeline
 
 import os
 import sys
+
+from . import config
 from .main import execute_image_analysis_pipeline, run_batch_analysis
 from .reporting import create_summary_report
-from . import config
 
 
 def example_basic_usage():
@@ -42,8 +43,10 @@ def example_modality_comparison():
     config.MODALITY = "CT"
     try:
         ct_results = execute_image_analysis_pipeline(image_path, "ct_results")
-        results['CT'] = ct_results
-        print(f"CT Classification: {ct_results['classification']['primary_classification']}")
+        results["CT"] = ct_results
+        print(
+            f"CT Classification: {ct_results['classification']['primary_classification']}"
+        )
         print(f"CT Confidence: {ct_results['classification']['confidence_score']:.1%}")
     except Exception as e:
         print(f"CT analysis failed: {e}")
@@ -51,15 +54,23 @@ def example_modality_comparison():
     config.MODALITY = "MRI"
     try:
         mri_results = execute_image_analysis_pipeline(image_path, "mri_results")
-        results['MRI'] = mri_results
-        print(f"MRI Classification: {mri_results['classification']['primary_classification']}")
-        print(f"MRI Confidence: {mri_results['classification']['confidence_score']:.1%}")
+        results["MRI"] = mri_results
+        print(
+            f"MRI Classification: {mri_results['classification']['primary_classification']}"
+        )
+        print(
+            f"MRI Confidence: {mri_results['classification']['confidence_score']:.1%}"
+        )
     except Exception as e:
         print(f"MRI analysis failed: {e}")
     if len(results) == 2:
         print("\nComparison Summary:")
-        print(f"CT vs MRI Classification: {results['CT']['classification']['primary_classification']} vs {results['MRI']['classification']['primary_classification']}")
-        print(f"CT vs MRI Confidence: {results['CT']['classification']['confidence_score']:.1%} vs {results['MRI']['classification']['confidence_score']:.1%}")
+        print(
+            f"CT vs MRI Classification: {results['CT']['classification']['primary_classification']} vs {results['MRI']['classification']['primary_classification']}"
+        )
+        print(
+            f"CT vs MRI Confidence: {results['CT']['classification']['confidence_score']:.1%} vs {results['MRI']['classification']['confidence_score']:.1%}"
+        )
     return results
 
 
@@ -74,6 +85,7 @@ def example_batch_processing():
         test_images.append(image_path)
         if not os.path.exists(image_path):
             from .preprocessing import create_fictional_image
+
             create_fictional_image(image_path)
     print(f"Processing {len(test_images)} images...")
     try:
@@ -81,8 +93,8 @@ def example_batch_processing():
         print("\nBatch Processing Summary:")
         for image_path, results in batch_results.items():
             if "error" not in results:
-                classification = results['classification']['primary_classification']
-                confidence = results['classification']['confidence_score']
+                classification = results["classification"]["primary_classification"]
+                confidence = results["classification"]["confidence_score"]
                 print(f"  {image_path}: {classification} ({confidence:.1%})")
             else:
                 print(f"  {image_path}: ERROR - {results['error']}")
@@ -107,8 +119,12 @@ def example_custom_configuration():
         print("Running with custom configuration:")
         print(f"  Modality: {config.MODALITY}")
         print(f"  Image Size: {config.TARGET_IMAGE_SIZE}")
-        print(f"  Area Threshold: {config.MODALITY_PARAMS['CT']['classification_area_threshold']}")
-        results = execute_image_analysis_pipeline("example_input_image.png", "custom_results")
+        print(
+            f"  Area Threshold: {config.MODALITY_PARAMS['CT']['classification_area_threshold']}"
+        )
+        results = execute_image_analysis_pipeline(
+            "example_input_image.png", "custom_results"
+        )
         print("\nCustom Configuration Results:")
         print(f"Classification: {results['classification']['primary_classification']}")
         print(f"Confidence: {results['classification']['confidence_score']:.1%}")
@@ -127,10 +143,11 @@ def example_programmatic_usage():
     print("EXAMPLE 5: Programmatic Usage")
     print("=" * 60)
     try:
+        from .classification import classify_structures
+        from .feature_extraction import extract_features
         from .preprocessing import load_and_preprocess_image
         from .segmentation import segment_structures
-        from .feature_extraction import extract_features
-        from .classification import classify_structures
+
         image_path = "example_input_image.png"
         print("Step 1: Preprocessing...")
         processed_img = load_and_preprocess_image(image_path)
@@ -142,12 +159,12 @@ def example_programmatic_usage():
         print("Step 4: Classification...")
         classification = classify_structures(features)
         print("\nCustom Analysis:")
-        area_size = features.get('total_area_pixels', 0)
+        area_size = features.get("total_area_pixels", 0)
         if area_size > 5000:
             print(f"  Large lesion detected: {area_size} pixels")
         else:
             print(f"  Small lesion detected: {area_size} pixels")
-        texture_contrast = features.get('texture_contrast', 0)
+        texture_contrast = features.get("texture_contrast", 0)
         if texture_contrast > 0.5:
             print(f"  High texture heterogeneity: {texture_contrast:.3f}")
         else:
@@ -155,10 +172,10 @@ def example_programmatic_usage():
         summary = create_summary_report(features, classification)
         print(f"\nCustom Summary:\n{summary}")
         return {
-            'processed_image': processed_array,
-            'mask': mask,
-            'features': features,
-            'classification': classification
+            "processed_image": processed_array,
+            "mask": mask,
+            "features": features,
+            "classification": classification,
         }
     except Exception as e:
         print(f"Programmatic usage example failed: {e}")
@@ -169,7 +186,6 @@ def run_all_examples():
     """Run all examples in sequence"""
     print("Medical Image Analysis Pipeline - Example Usage")
     print("=" * 60)
-    import numpy as np
     example_basic_usage()
     example_modality_comparison()
     example_batch_processing()
@@ -179,10 +195,10 @@ def run_all_examples():
     print("ALL EXAMPLES COMPLETED")
     print("=" * 60)
     print("\nGenerated files and directories:")
-    for item in os.listdir('.'):
-        if os.path.isdir(item) and ('results' in item or 'analysis' in item):
+    for item in os.listdir("."):
+        if os.path.isdir(item) and ("results" in item or "analysis" in item):
             print(f"  📁 {item}/")
-        elif item.endswith('.png') and 'test' in item:
+        elif item.endswith(".png") and "test" in item:
             print(f"  🖼️  {item}")
 
 

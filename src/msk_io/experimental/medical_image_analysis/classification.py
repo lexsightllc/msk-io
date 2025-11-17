@@ -4,7 +4,6 @@ Medical Image Analysis Pipeline - Classification Module
 This module handles structure classification and diagnostic suggestions.
 """
 
-import numpy as np
 from .config import MODALITY, MODALITY_PARAMS
 
 
@@ -16,7 +15,7 @@ def classify_structures(features: dict) -> dict:
         "primary_classification": "Indeterminate",
         "confidence_score": 0.0,
         "risk_level": "Unknown",
-        "recommendations": []
+        "recommendations": [],
     }
     area = features.get("total_area_pixels", 0)
     mean_intensity = features.get("mean_intensity", 0)
@@ -36,21 +35,27 @@ def classify_structures(features: dict) -> dict:
         classification_result, features
     )
 
-    print(f"4.2 Classification result: {classification_result['primary_classification']}")
+    print(
+        f"4.2 Classification result: {classification_result['primary_classification']}"
+    )
     print(f"4.3 Confidence score: {classification_result['confidence_score']:.3f}")
 
     return classification_result
 
 
-def _classify_ct_structures(area: float, mean_intensity: float,
-                          texture_contrast: float, compactness: float,
-                          params: dict) -> dict:
+def _classify_ct_structures(
+    area: float,
+    mean_intensity: float,
+    texture_contrast: float,
+    compactness: float,
+    params: dict,
+) -> dict:
     """CT-specific classification logic."""
     result = {
         "primary_classification": "Indeterminate",
         "confidence_score": 0.5,
         "risk_level": "Medium",
-        "recommendations": []
+        "recommendations": [],
     }
 
     large_area_threshold = params["classification_area_threshold"]
@@ -78,15 +83,19 @@ def _classify_ct_structures(area: float, mean_intensity: float,
     return result
 
 
-def _classify_mri_structures(area: float, mean_intensity: float,
-                           texture_contrast: float, compactness: float,
-                           params: dict) -> dict:
+def _classify_mri_structures(
+    area: float,
+    mean_intensity: float,
+    texture_contrast: float,
+    compactness: float,
+    params: dict,
+) -> dict:
     """MRI-specific classification logic."""
     result = {
         "primary_classification": "Indeterminate",
         "confidence_score": 0.5,
         "risk_level": "Medium",
-        "recommendations": []
+        "recommendations": [],
     }
 
     large_area_threshold = params["classification_area_threshold"]
@@ -121,34 +130,44 @@ def _generate_recommendations(classification_result: dict, features: dict) -> li
     confidence = classification_result["confidence_score"]
 
     if classification == "Potentially Malignant":
-        recommendations.extend([
-            "Urgent referral to oncology specialist recommended",
-            "Consider tissue biopsy for definitive diagnosis",
-            "Additional imaging with contrast may be beneficial",
-            "Multidisciplinary team review suggested"
-        ])
+        recommendations.extend(
+            [
+                "Urgent referral to oncology specialist recommended",
+                "Consider tissue biopsy for definitive diagnosis",
+                "Additional imaging with contrast may be beneficial",
+                "Multidisciplinary team review suggested",
+            ]
+        )
         if confidence < 0.8:
             recommendations.append("Consider second opinion due to moderate confidence")
     elif classification == "Benign":
-        recommendations.extend([
-            "Routine follow-up imaging in 6-12 months",
-            "Continue standard monitoring protocols",
-            "No immediate intervention required"
-        ])
+        recommendations.extend(
+            [
+                "Routine follow-up imaging in 6-12 months",
+                "Continue standard monitoring protocols",
+                "No immediate intervention required",
+            ]
+        )
         if confidence < 0.8:
-            recommendations.append("Consider additional imaging modalities for confirmation")
+            recommendations.append(
+                "Consider additional imaging modalities for confirmation"
+            )
     else:
-        recommendations.extend([
-            "Radiologist review recommended",
-            "Consider additional imaging sequences",
-            "Correlate with clinical history and symptoms",
-            "Short-term follow-up imaging (3-6 months) may be appropriate"
-        ])
+        recommendations.extend(
+            [
+                "Radiologist review recommended",
+                "Consider additional imaging sequences",
+                "Correlate with clinical history and symptoms",
+                "Short-term follow-up imaging (3-6 months) may be appropriate",
+            ]
+        )
 
     if features.get("total_area_pixels", 0) > 10000:
         recommendations.append("Large lesion size warrants expedited evaluation")
     if features.get("texture_contrast", 0) > 0.6:
-        recommendations.append("High texture heterogeneity noted - consider dynamic imaging")
+        recommendations.append(
+            "High texture heterogeneity noted - consider dynamic imaging"
+        )
 
     return recommendations
 
@@ -179,7 +198,12 @@ def integrate_ai_assistance(query: str, classification_result: dict) -> str:
 
 def validate_classification(classification_result: dict) -> bool:
     """Validates the classification result for consistency."""
-    required_keys = ["primary_classification", "confidence_score", "risk_level", "recommendations"]
+    required_keys = [
+        "primary_classification",
+        "confidence_score",
+        "risk_level",
+        "recommendations",
+    ]
 
     for key in required_keys:
         if key not in classification_result:

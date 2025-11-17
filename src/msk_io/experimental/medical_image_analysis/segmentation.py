@@ -7,6 +7,7 @@ This module handles image segmentation using edge detection and morphological op
 import numpy as np
 import skimage.feature
 import skimage.morphology
+
 from .config import MODALITY, MODALITY_PARAMS
 
 
@@ -37,8 +38,8 @@ def create_simulated_roi(image_np: np.ndarray) -> np.ndarray:
     center_x, center_y = image_np.shape[1] // 2, image_np.shape[0] // 2
     radius = min(image_np.shape) // roi_radius_factor
 
-    Y, X = np.ogrid[:image_np.shape[0], :image_np.shape[1]]
-    dist_from_center = np.sqrt((X - center_x)**2 + (Y - center_y)**2)
+    Y, X = np.ogrid[: image_np.shape[0], : image_np.shape[1]]
+    dist_from_center = np.sqrt((X - center_x) ** 2 + (Y - center_y) ** 2)
     mask_ai[dist_from_center <= radius] = True
 
     return mask_ai
@@ -70,11 +71,12 @@ def validate_segmentation(mask: np.ndarray) -> bool:
 def get_largest_connected_component(mask: np.ndarray) -> np.ndarray:
     """Extracts the largest connected component from the segmentation mask."""
     import skimage.measure
+
     labeled_mask = skimage.measure.label(mask)
     if labeled_mask.max() == 0:
         return mask
     component_sizes = np.bincount(labeled_mask.flat)
     component_sizes[0] = 0
     largest_component_label = component_sizes.argmax()
-    largest_component_mask = (labeled_mask == largest_component_label)
+    largest_component_mask = labeled_mask == largest_component_label
     return largest_component_mask

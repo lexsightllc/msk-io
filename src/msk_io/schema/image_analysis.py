@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MPL-2.0
-from typing import Dict, Any, List, Literal, Optional
 from datetime import datetime
+from typing import Any, Literal
 from uuid import uuid4
+
 from pydantic import Field
 
 from msk_io.schema._pydantic_base import MSKIOBaseModel
@@ -12,11 +13,11 @@ class ImageMetaData(MSKIOBaseModel):
     """Basic metadata for a processed image."""
 
     original_path: str
-    processed_path: Optional[str] = None
+    processed_path: str | None = None
     image_format: str  # e.g., 'png', 'nifti', 'dcm'
-    dimensions: List[int]  # e.g., [H, W] or [D, H, W]
-    channels: Optional[int] = None
-    voxel_spacing: Optional[List[float]] = None  # for 3D volumes
+    dimensions: list[int]  # e.g., [H, W] or [D, H, W]
+    channels: int | None = None
+    voxel_spacing: list[float] | None = None  # for 3D volumes
 
 
 class RegionOfInterest(MSKIOBaseModel):
@@ -24,16 +25,16 @@ class RegionOfInterest(MSKIOBaseModel):
 
     roi_id: str
     label: str  # e.g., 'Kidney', 'Tumor', 'Liver'
-    bounding_box_2d: Optional[List[int]] = None
-    bounding_box_3d: Optional[List[int]] = None
-    centroid_2d: Optional[List[float]] = None
-    centroid_3d: Optional[List[float]] = None
-    volume_mm3: Optional[float] = None
-    area_mm2: Optional[float] = None
-    pixel_count: Optional[int] = None
-    mask_file_path: Optional[str] = None
-    confidence_score: Optional[float] = None
-    segmentation_model_used: Optional[str] = None
+    bounding_box_2d: list[int] | None = None
+    bounding_box_3d: list[int] | None = None
+    centroid_2d: list[float] | None = None
+    centroid_3d: list[float] | None = None
+    volume_mm3: float | None = None
+    area_mm2: float | None = None
+    pixel_count: int | None = None
+    mask_file_path: str | None = None
+    confidence_score: float | None = None
+    segmentation_model_used: str | None = None
 
 
 class ImageSegmentationResult(MSKIOBaseModel):
@@ -42,7 +43,7 @@ class ImageSegmentationResult(MSKIOBaseModel):
     source_volume: DICOMVolume
     segmentation_id: str
     segmented_at: datetime = Field(default_factory=datetime.now)
-    regions_of_interest: List[RegionOfInterest]
+    regions_of_interest: list[RegionOfInterest]
     segmentation_method: str
     processed_image_meta: ImageMetaData
 
@@ -52,9 +53,9 @@ class ImageFeature(MSKIOBaseModel):
 
     feature_name: str
     value: Any
-    unit: Optional[str] = None
-    description: Optional[str] = None
-    method_used: Optional[str] = None
+    unit: str | None = None
+    description: str | None = None
+    method_used: str | None = None
 
 
 class ImageAnalysisResult(MSKIOBaseModel):
@@ -62,16 +63,15 @@ class ImageAnalysisResult(MSKIOBaseModel):
 
     analysis_id: str = Field(default_factory=lambda: str(uuid4()))
     analyzed_volume: DICOMVolume
-    segmentation_results: List[ImageSegmentationResult] = Field(default_factory=list)
-    extracted_features: List[ImageFeature] = Field(default_factory=list)
-    qualitative_observations: Optional[str] = None
+    segmentation_results: list[ImageSegmentationResult] = Field(default_factory=list)
+    extracted_features: list[ImageFeature] = Field(default_factory=list)
+    qualitative_observations: str | None = None
     analysis_time: datetime = Field(default_factory=datetime.now)
     status: Literal["SUCCESS", "FAILURE", "PARTIAL_SUCCESS"] = "SUCCESS"
-    errors: List[Dict[str, Any]] = Field(default_factory=list)
+    errors: list[dict[str, Any]] = Field(default_factory=list)
 
     def add_segmentation(self, seg_result: ImageSegmentationResult) -> None:
         self.segmentation_results.append(seg_result)
 
     def add_feature(self, feature: ImageFeature) -> None:
         self.extracted_features.append(feature)
-

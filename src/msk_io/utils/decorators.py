@@ -1,15 +1,16 @@
 # SPDX-License-Identifier: MPL-2.0
-import logging
 import functools
-from typing import Any, Callable, TypeVar, ParamSpec
+from collections.abc import Callable
+from typing import ParamSpec, TypeVar
 
+from msk_io.errors import ConfigurationError, MSKIOError
 from msk_io.utils.log_config import get_logger
-from msk_io.errors import MSKIOError, ConfigurationError
 
 logger = get_logger(__name__)
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+
 
 def log_method_entry_exit(func: Callable[_P, _R]) -> Callable[_P, _R]:
     @functools.wraps(func)
@@ -23,7 +24,9 @@ def log_method_entry_exit(func: Callable[_P, _R]) -> Callable[_P, _R]:
         except Exception as e:
             logger.error(f"Exception in {func_name}: {e}", exc_info=True)
             raise
+
     return wrapper
+
 
 def handle_errors(func: Callable[_P, _R]) -> Callable[_P, _R]:
     @functools.wraps(func)
@@ -35,8 +38,12 @@ def handle_errors(func: Callable[_P, _R]) -> Callable[_P, _R]:
             raise
         except Exception as e:
             logger.error(f"Unexpected error in {func.__qualname__}: {e}", exc_info=True)
-            raise MSKIOError(f"An unexpected error occurred in {func.__qualname__}: {e}") from e
+            raise MSKIOError(
+                f"An unexpected error occurred in {func.__qualname__}: {e}"
+            ) from e
+
     return wrapper
+
 
 def requires_config(setting_key: str) -> Callable[[Callable[_P, _R]], Callable[_P, _R]]:
     """Decorator to ensure a (possibly nested) config value exists before call."""
@@ -49,7 +56,7 @@ def requires_config(setting_key: str) -> Callable[[Callable[_P, _R]], Callable[_
             if CONFIG is None:
                 raise ConfigurationError("Application configuration not loaded.")
 
-            parts = setting_key.split('.')
+            parts = setting_key.split(".")
             current_config = CONFIG
             for part in parts:
                 if not hasattr(current_config, part):

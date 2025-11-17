@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: MPL-2.0
-import os
 import logging
+import os
+
 from pydantic import Field, SecretStr, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from msk_io.utils.log_config import get_logger
+
 from msk_io.errors import ConfigurationError
+from msk_io.utils.log_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -35,7 +37,11 @@ class ImageProcessingSettings(BaseSettings):
         0.7, ge=0.0, le=1.0, description="Minimum confidence for segmentation masks."
     )
     image_cache_dir: str = Field(
-        "/tmp/msk_io_cache/images",
+        default_factory=lambda: os.path.join(
+            os.environ.get("TMPDIR", os.environ.get("TEMP", "/tmp")),
+            "msk_io_cache",
+            "images",
+        ),
         description="Directory for caching processed images.",
     )
 
@@ -98,19 +104,19 @@ class AppSettings(BaseSettings):
 
 
 class AppConfig(BaseSettings):
-    app: AppSettings = Field(default_factory=AppSettings)
-    llm: LLMSettings = Field(default_factory=LLMSettings)
+    app: AppSettings = Field(default_factory=lambda: AppSettings())
+    llm: LLMSettings = Field(default_factory=lambda: LLMSettings())
     image_processing: ImageProcessingSettings = Field(
-        default_factory=ImageProcessingSettings
+        default_factory=lambda: ImageProcessingSettings()
     )
-    retrieval: RetrievalSettings = Field(default_factory=RetrievalSettings)
-    indexer: IndexerSettings = Field(default_factory=IndexerSettings)
+    retrieval: RetrievalSettings = Field(default_factory=lambda: RetrievalSettings())
+    indexer: IndexerSettings = Field(default_factory=lambda: IndexerSettings())
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"
     )
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: object, **kwargs: object) -> None:
         super().__init__(*args, **kwargs)
         self._setup_logging_from_config()
         self._ensure_directories_exist()
@@ -159,7 +165,9 @@ def load_config(env_file: str | None = None) -> AppConfig:
     """
 
     if env_file is None:
-        env_file = os.environ.get("MSKIO_APP_ENV_FILE", os.path.join(os.getcwd(), ".env"))
+        env_file = os.environ.get(
+            "MSKIO_APP_ENV_FILE", os.path.join(os.getcwd(), ".env")
+        )
 
     if os.path.exists(env_file):
         try:
